@@ -1,0 +1,27 @@
+name: Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # 每30分钟，这是最稳妥的
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run
+        run: |
+          pip install requests
+          python update_data.py
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
+          single-commit: true
