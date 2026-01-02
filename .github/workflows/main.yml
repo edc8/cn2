@@ -1,10 +1,10 @@
-name: BTC_Monitor_6h_Update
+name: BTC_Monitor_Hourly_Update
 
 on:
   schedule:
-    # UTC 时间 0, 6, 12, 18 点运行（对应北京时间 8, 14, 20, 02 点）
-    - cron: '0 */6 * * *'
-  workflow_dispatch: # 允许点击按钮手动运行
+    # 每小时整点运行一次 (UTC 时间)
+    - cron: '0 * * * *'
+  workflow_dispatch: # 允许在 GitHub 界面手动点击运行
 
 permissions:
   contents: write
