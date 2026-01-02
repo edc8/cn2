@@ -1,27 +1,35 @@
-name: Monitor
+name: BTC_Monitor_6h_Update
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # 每30分钟，这是最稳妥的
-  workflow_dispatch:
+    # UTC 时间 0, 6, 12, 18 点运行（对应北京时间 8, 14, 20, 02 点）
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # 允许点击按钮手动运行
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  update_job:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Run
-        run: |
-          pip install requests
-          python update_data.py
-
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          folder: .
-          branch: gh-pages
-          single-commit: true
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Python script
+        run: python update_data.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
